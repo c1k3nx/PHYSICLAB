@@ -1,3 +1,4 @@
+
 import { Category, Experiment } from './types';
 import { 
   Atom, 
@@ -25,6 +26,13 @@ export const CATEGORY_ICONS = {
 
 export const EXPERIMENTS: Experiment[] = [
   // --- MECHANICS ---
+  {
+    id: 'mech-motion-1d',
+    title: 'Uniform Acceleration',
+    category: Category.MECHANICS,
+    description: 'Study 1D motion with constant acceleration, velocity, and position graphs.',
+    tags: ['Kinematics', 'Graphs', '1D Motion']
+  },
   {
     id: 'mech-projectile',
     title: 'Projectile Motion',

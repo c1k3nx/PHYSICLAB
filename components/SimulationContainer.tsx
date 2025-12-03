@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Experiment } from '../types';
 import { useGlobal } from '../contexts/GlobalContext';
 import { ProjectileSim } from './simulations/ProjectileSim';
+import { Motion1DSim } from './simulations/Motion1DSim'; 
 import { GasSim } from './simulations/GasSim';
 import { OpticsSim } from './simulations/OpticsSim';
 import { ElecSim } from './simulations/ElecSim';
@@ -166,26 +167,22 @@ const FormattedText: React.FC<{ text: string; type: 'theory' | 'guide' }> = ({ t
                 }
 
                 // Detect Command Name (e.g. \alpha, \sin)
-                // Match letters after \
                 const match = remainder.match(/^\\([a-zA-Z]+)/);
                 if (match) {
                     const cmd = match[1];
                     const cmdLength = match[0].length;
                     const rest = remainder.substring(cmdLength);
 
-                    // Check Symbol Map
                     if (SYMBOL_MAP[cmd]) {
                         return <>{preNode}<span className="mx-[1px]">{SYMBOL_MAP[cmd]}</span>{renderParts(rest)}</>;
                     }
 
-                    // Check Standard Math Functions
                     const funcs = ['sin', 'cos', 'tan', 'arcsin', 'arccos', 'arctan', 'ln', 'log'];
                     if (funcs.includes(cmd)) {
                         return <>{preNode}<span className="mx-0.5 font-sans">{cmd}</span>{renderParts(rest)}</>;
                     }
                 }
                 
-                // Fallback: Skip the backslash and continue
                 return <>{preNode}{renderParts(remainder.substring(1))}</>;
             }
 
@@ -215,8 +212,7 @@ const FormattedText: React.FC<{ text: string; type: 'theory' | 'guide' }> = ({ t
                 }
                 if (cleanLine.startsWith('## ') || (cleanLine.endsWith(':') && !cleanLine.includes(' '))) {
                     return (
-                        <h4 key={idx} className="text-lg font-bold text-emerald-400 mt-6 mb-3 flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+                        <h4 key={idx} className="text-lg font-bold text-emerald-400 mt-6 mb-3 flex items-center gap-2 border-l-4 border-emerald-500 pl-3">
                             {cleanLine.replace(/^##\s+/, '').replace(/:$/, '')}
                         </h4>
                     );
@@ -238,6 +234,7 @@ const FormattedText: React.FC<{ text: string; type: 'theory' | 'guide' }> = ({ t
                     const parts = text.split(/(\$[^$]+\$|\*\*.*?\*\*)/g);
                     return parts.map((part, i) => {
                         if (part.startsWith('**') && part.endsWith('**')) return <strong key={i} className="text-blue-200 font-bold">{part.slice(2, -2)}</strong>;
+                        // Strip $ and render math
                         if (part.startsWith('$') && part.endsWith('$')) return <span key={i} className="mx-1 inline-block">{renderMath(part.slice(1, -1), false)}</span>;
                         return part;
                     });
@@ -246,7 +243,7 @@ const FormattedText: React.FC<{ text: string; type: 'theory' | 'guide' }> = ({ t
                 if (cleanLine.startsWith('* ') || cleanLine.startsWith('- ')) {
                     const content = cleanLine.replace(/^[\*\-]\s+/, '');
                     return (
-                        <div key={idx} className="flex gap-4 pl-4 items-start group py-1">
+                        <div key={idx} className="flex gap-3 pl-2 items-start group py-1">
                             <div className="mt-2 w-1.5 h-1.5 rounded-full bg-slate-500 group-hover:bg-blue-400 transition-all shrink-0"></div>
                             <span className="text-slate-300 group-hover:text-slate-100 transition-colors leading-relaxed text-[15px]">
                                 {renderInline(content)}
@@ -281,6 +278,7 @@ export const SimulationContainer: React.FC<Props> = ({ experiment }) => {
   
   const renderSimulation = () => {
     switch(experiment.id) {
+        case 'mech-motion-1d': return <Motion1DSim />; 
         case 'mech-projectile': return <ProjectileSim />;
         case 'mech-newton': return <NewtonSim />;
         case 'mech-circular': return <CircularSim />;
@@ -308,7 +306,7 @@ export const SimulationContainer: React.FC<Props> = ({ experiment }) => {
 
   return (
     <div className="h-full flex flex-col relative animate-in fade-in duration-300">
-      <div className={`h-14 shrink-0 border-b flex items-center justify-between px-4 z-20 backdrop-blur-md transition-colors ${isDark ? 'bg-[#0f121a]/90 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
+      <div className={`h-12 shrink-0 border-b flex items-center justify-between px-4 z-20 backdrop-blur-md transition-colors ${isDark ? 'bg-[#0f121a]/90 border-slate-800' : 'bg-white/90 border-slate-200'}`}>
           <div className="flex items-center gap-4 overflow-hidden">
               <h2 className={`text-sm font-bold uppercase tracking-widest truncate ${isDark ? 'text-white' : 'text-slate-800'}`}>
                   {t(experiment.id)}
