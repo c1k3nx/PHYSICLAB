@@ -429,7 +429,7 @@ export const SimulationContainer: React.FC<Props> = ({ experiment }) => {
                            </div>
 
                           {activeTab === 'theory' ? (
-                              <div className="animate-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto">
+                              <div className="animate-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto pb-10">
                                  <div className="mb-8 pb-4 border-b border-slate-800">
                                      <h2 className="text-3xl font-bold text-white mb-2">{t('physics_concepts')}</h2>
                                      <p className="text-slate-400">{t('theory_subtitle')}</p>
@@ -437,7 +437,7 @@ export const SimulationContainer: React.FC<Props> = ({ experiment }) => {
                                  <FormattedText text={t(`theory_${experiment.id}`)} type="theory" />
                               </div>
                           ) : (
-                              <div className="animate-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto">
+                              <div className="animate-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto pb-10">
                                  <div className="mb-8 pb-4 border-b border-slate-800">
                                      <h2 className="text-3xl font-bold text-white mb-2">{t('interactive_guide')}</h2>
                                      <p className="text-slate-400">{t('guide_subtitle')}</p>

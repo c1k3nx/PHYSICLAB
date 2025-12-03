@@ -230,4 +230,72 @@ export const OpticsSim: React.FC = () => {
   const handleMouseUp = () => { setIsDraggingLaser(false); setIsDraggingProtractor(false); };
 
   return (
-    <div className="relative w-full h-full rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-
+    <div className="relative w-full h-full rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
+        <canvas 
+            ref={canvasRef} 
+            width={1000} 
+            height={600} 
+            className={`absolute inset-0 w-full h-full object-contain ${isDraggingLaser || isDraggingProtractor ? 'cursor-grabbing' : 'cursor-default'}`}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+        />
+        
+        <div className="absolute top-4 right-4 pointer-events-none text-center">
+             <div className="bg-slate-900/80 backdrop-blur border border-slate-600 rounded-xl p-3 shadow-lg">
+                 <div className="text-xs font-bold text-slate-400 uppercase mb-1">{t('drag_laser')}</div>
+                 <div className="text-xl font-mono text-red-400 font-bold">{Math.abs(laserAngle).toFixed(1)}°</div>
+             </div>
+        </div>
+
+        {/* CONTROLS */}
+        <div className={`absolute top-4 left-4 transition-all duration-300 z-10 ${showControls ? 'w-80' : 'w-12'}`}>
+            <div className="bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden">
+                <button onClick={() => setShowControls(!showControls)} className="w-full p-3 flex items-center justify-between text-slate-300 hover:bg-slate-800 transition-colors border-b border-slate-700/50">
+                    {showControls ? <span className="text-xs font-bold uppercase tracking-widest flex items-center gap-2"><Settings2 size={14} className="text-blue-400"/> {t('control_center')}</span> : <Settings2 size={20} className="mx-auto text-blue-400"/>}
+                    {showControls && (showControls ? <ChevronUp size={14}/> : <ChevronDown size={14}/>)}
+                </button>
+
+                {showControls && (
+                    <div className="p-5 space-y-6">
+                        <div className="space-y-4">
+                            <div className="space-y-1">
+                                <div className="flex justify-between text-xs text-slate-300">
+                                    <span>{t('medium_1')} (n₁)</span>
+                                    <span className="text-blue-300 font-mono">{n1.toFixed(2)}</span>
+                                </div>
+                                <input type="range" min="1.00" max="3.00" step="0.01" value={n1} onChange={(e) => setN1(Number(e.target.value))} className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-400"/>
+                            </div>
+                            <div className="space-y-1">
+                                <div className="flex justify-between text-xs text-slate-300">
+                                    <span>{t('medium_2')} (n₂)</span>
+                                    <span className="text-blue-500 font-mono">{n2.toFixed(2)}</span>
+                                </div>
+                                <input type="range" min="1.00" max="3.00" step="0.01" value={n2} onChange={(e) => setN2(Number(e.target.value))} className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"/>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-4 gap-2">
+                            {Object.entries(PRESETS).map(([key, val]) => (
+                                <button key={key} onClick={() => setN2(val)} className="p-1 rounded bg-slate-800 border border-slate-600 text-[10px] text-slate-300 hover:bg-slate-700 uppercase font-bold">{t(key)}</button>
+                            ))}
+                        </div>
+
+                        <div className="w-full h-px bg-slate-700/50"></div>
+
+                        <div className="flex gap-2">
+                            <button onClick={() => setShowWaves(!showWaves)} className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-2 ${showWaves ? 'bg-indigo-600/30 border-indigo-500 text-indigo-300' : 'bg-slate-800 border-slate-600 text-slate-400'}`}>
+                                <Waves size={14}/> {t('wavefronts')}
+                            </button>
+                            <button onClick={() => setShowProtractor(!showProtractor)} className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-2 ${showProtractor ? 'bg-yellow-600/30 border-yellow-500 text-yellow-300' : 'bg-slate-800 border-slate-600 text-slate-400'}`}>
+                                <Compass size={14}/> {t('protractor')}
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+         </div>
+    </div>
+  );
+};
